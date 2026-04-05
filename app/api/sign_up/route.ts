@@ -39,6 +39,13 @@ export async function POST(request: Request) {
         .from('users')
         .insert({username: body.username, password: body.password})
 
+    if (error!.code == "23505") {
+        return Response.json(
+            { error: "Username already exists" },
+            { status: 409 }
+        );
+    }
+
    return Response.json(
     { message: "User created" },
     { status: 201 }
