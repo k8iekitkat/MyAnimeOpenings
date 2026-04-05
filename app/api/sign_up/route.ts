@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import argon2 from 'argon2'
 
 type SignupBody = {
     username: string;
@@ -34,10 +35,22 @@ export async function POST(request: Request) {
     };
 
    // TODO: check DB, hash password, create user 
+   let passwordHash;
+   try {
+    passwordHash = await argon2.hash(password, {
+        type: argon2.argon2id,
+    })
+   }
+   catch {
+    return Response.json(
+        { error: "Password hashing broken" },
+        { status: 500 }
+    );
+   };
 
    const { error } = await supabase
         .from('users')
-        .insert({username: body.username, password: body.password})
+        .insert({username: body.username, password: passwordHash})
 
     if (error!.code == "23505") {
         return Response.json(
