@@ -10,7 +10,12 @@ export async function POST(request: Request) {
     let body: SignupBody;
 
     try {
-        body = await request.json();
+        const formData = await request.formData()
+
+        body = {
+        username: String(formData.get('username') ?? ''),
+        password: String(formData.get('password') ?? ''),
+        }
     } catch {
         return Response.json(
             { error: "Invalid JSON body" },
@@ -52,7 +57,7 @@ export async function POST(request: Request) {
         .from('users')
         .insert({username: body.username, password: passwordHash})
 
-    if (error!.code == "23505") {
+    if (error?.code == "23505") {
         return Response.json(
             { error: "Username already exists" },
             { status: 409 }
