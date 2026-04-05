@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 
 type SignupBody = {
-    user_name: string;
+    username: string;
     password: string;
 }
 
@@ -17,9 +17,9 @@ export async function POST(request: Request) {
         );
     }
 
-    const { user_name, password } = body;
+    const { username, password } = body;
 
-    if (!user_name || !password) {
+    if (!username || !password) {
         return Response.json(
             { error: "Missing required fields" },
             { status: 400 }
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
    const { error } = await supabase
         .from('users')
-        .insert({user_name: body.user_name, password: body.password})
+        .insert({username: body.username, password: body.password})
 
    return Response.json(
     { message: "User created" },
