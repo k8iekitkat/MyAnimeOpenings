@@ -1,8 +1,9 @@
+import { supabase } from '@/lib/supabase'
+
 type SignupBody = {
     user_name: string;
     password: string;
 }
-
 
 export async function POST(request: Request) {
     let body: SignupBody;
@@ -34,9 +35,14 @@ export async function POST(request: Request) {
 
    // TODO: check DB, hash password, create user 
 
+   const { error } = await supabase
+        .from('users')
+        .insert({user_name: body.user_name, password: body.password})
+
    return Response.json(
     { message: "User created" },
     { status: 201 }
    );
+
 }
 
