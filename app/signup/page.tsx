@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState, useTransition } from "react";
 
 const openingNotes = [
@@ -10,9 +11,9 @@ const openingNotes = [
 ];
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,8 +25,6 @@ export default function SignUpPage() {
     const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
     setError("");
-    setSuccess("");
-
     if (!username) {
       setError("Choose a username before continuing.");
       return;
@@ -57,8 +56,7 @@ export default function SignUpPage() {
           return;
         }
 
-        setSuccess(data?.message ?? "Account created.");
-        form.reset();
+        router.push("/profile");
       } catch {
         setError("Unable to reach the signup service right now.");
       }
@@ -164,15 +162,11 @@ export default function SignUpPage() {
               />
             </label>
 
-            {(error || success) && (
+            {error && (
               <div
-                className={`rounded-2xl border px-4 py-3 text-sm leading-6 ${
-                  error
-                    ? "border-[#ff9c88]/35 bg-[#ff9c88]/10 text-[#ffd0c6]"
-                    : "border-[#b9f3e4]/30 bg-[#b9f3e4]/10 text-[#dffbf4]"
-                }`}
+                className="rounded-2xl border border-[#ff9c88]/35 bg-[#ff9c88]/10 px-4 py-3 text-sm leading-6 text-[#ffd0c6]"
               >
-                {error || success}
+                {error}
               </div>
             )}
 
