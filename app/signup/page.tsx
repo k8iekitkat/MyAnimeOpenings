@@ -56,7 +56,7 @@ export default function SignUpPage() {
           return;
         }
 
-        router.push("/profile");
+        router.push("/login");
       } catch {
         setError("Unable to reach the signup service right now.");
       }
