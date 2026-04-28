@@ -58,7 +58,7 @@ export async function POST(request: Request) {
         }
         
         const sessionToken = crypto.randomUUID(); 
-        const { error } = await supabase.from('sessions').insert({cookie_id: sessionToken, username: submitted_username});
+        const { error } = await supabase.from('sessions').insert({cookie_id: sessionToken, username: username});
 
         if (error) return Response.json( {error: error}, { status: 500});
         res.cookies.set("session", sessionToken, {
