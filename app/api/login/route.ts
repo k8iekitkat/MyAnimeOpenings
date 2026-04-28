@@ -3,17 +3,19 @@ import argon2 from 'argon2'
 import {NextResponse } from "next/server";
 import crypto from 'crypto'
 
-type LoginBody = { submitted_username: string, sumbitted_password: string }
+type LoginBody = { username: string, password: string }
 
 export async function POST(request: Request) {
     let body: LoginBody;
     try {
-        const formData = await request.formData()
+        // TODO: change to form data, currently JSON for testing purposes
+        // const formData = await request.formData()
 
-        body = {
-        submitted_username: String(formData.get('username') ?? ''),
-        sumbitted_password: String(formData.get('password') ?? ''),
-        }
+        // body = {
+        // username: String(formData.get('username') ?? ''),
+        // password: String(formData.get('password') ?? ''),
+        // }
+        body = await request.json();
     } catch {
         return Response.json(
             { error: "Invalid JSON body" },
@@ -21,9 +23,9 @@ export async function POST(request: Request) {
         );
     }
 
-    const { submitted_username, sumbitted_password } = body;
+    const { username, password } = body;
 
-    if (!submitted_username || !sumbitted_password) {
+    if (!username || !password) {
         return Response.json(
             { error: "Missing required fields" },
             { status: 400 }
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
     }
 
      // SELECT username, possword FROM users WHERE username = username
-    const {data, error} = await supabase.from('users').select('username, password').eq('username', submitted_username)
+    const {data, error} = await supabase.from('users').select('username, password').eq('username', username)
 
     if (error) {
         return Response.json(
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
     }
     const res = NextResponse.json({ ok: true});
     try {
-        if (!await argon2.verify(data[0].password, sumbitted_password)) {
+        if (!await argon2.verify(data[0].password, password)) {
             return Response.json(
                 {error: "Invalid Username or Password"},
                 {status: 401}
