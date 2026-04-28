@@ -1,9 +1,11 @@
 import { supabase } from '@/lib/supabase'
 import argon2 from 'argon2'
+import {NextResponse } from "next/server";
+import crypto from 'crypto'
 
 type LoginBody = { submitted_username: string, sumbitted_password: string }
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
     let body: LoginBody;
     try {
         const formData = await request.formData()
@@ -44,7 +46,7 @@ export async function GET(request: Request) {
             {status: 401}
         )
     }
-
+    const res = NextResponse.json({ ok: true});
     try {
         if (!await argon2.verify(data[0].password, sumbitted_password)) {
             return Response.json(
@@ -52,6 +54,17 @@ export async function GET(request: Request) {
                 {status: 401}
             )
         }
+        
+        const sessionToken = crypto.randomUUID(); 
+        const { error } = await supabase.from('sessions').insert({cookie_id: sessionToken, username: submitted_username});
+
+        if (error) return Response.json( {error: error}, { status: 500});
+        res.cookies.set("session", sessionToken, {
+            httpOnly: true,
+            path: "/",
+            maxAge: 60*60*24*7,
+            sameSite: "lax"
+        });
     } catch (err) {
         return Response.json(
             {error: err},
@@ -59,9 +72,6 @@ export async function GET(request: Request) {
         )
 
     }
-    
-    return Response.json(
-        {message: "Login successful"},
-        {status: 200}
-    );
+
+    return res;
 }
