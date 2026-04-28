@@ -11,6 +11,5 @@ export default async function ProfileLayout({
 //   if (!user) {
 //     redirect("/login");
 //   }
-
   return <>{children}</>;
 }
