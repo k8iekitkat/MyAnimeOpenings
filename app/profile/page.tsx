@@ -1,25 +1,34 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { supabase } from '@/lib/supabase';
+import { cookies } from "next/headers";
 
-const userProfile = {
-  username: "Sample Username",
-  avatarLabel: "PFP",
-  about: "About",
-};
-
-const highestRatedTheme = {
-  title: "Highest Rated Theme",
-  anime: "Anime Title",
-  rating: "9.4",
-};
+async function getUserFromSession() {
+}
 
 export default function ProfilePage() {
+  const user = getUserFromSession();
+  if(!user) {
+    redirect('/login');
+  }
+  const userProfile = {
+    username: "temp_user",
+  };
+
+  const highestRatedTheme = {
+    title: "Temp",
+    anime: "Temp Anime",
+    rating: 9.9,
+  };
+
+
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-10 sm:py-12">
       <section className="rounded-[2rem] border border-[#17130f]/10 bg-white/50 p-6 shadow-[0_24px_80px_rgba(23,19,15,0.08)] backdrop-blur sm:p-8">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
             <div className="flex h-28 w-28 items-center justify-center rounded-[2rem] bg-[#17130f] text-[#f7f2eb] shadow-[0_18px_50px_rgba(23,19,15,0.22)] sm:h-32 sm:w-32">
-              <span className="font-display text-6xl">{userProfile.avatarLabel}</span>
+              <span className="font-display text-6xl">Temp</span>
             </div>
 
             <div className="max-w-2xl">
@@ -29,9 +38,6 @@ export default function ProfilePage() {
               <h1 className="mt-3 font-display text-5xl leading-none text-[#17130f] sm:text-7xl">
                 {userProfile.username}
               </h1>
-              <p className="mt-4 text-base leading-7 text-[#4f4031] sm:text-lg">
-                {userProfile.about}
-              </p>
             </div>
           </div>
 
@@ -89,7 +95,7 @@ export default function ProfilePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d9b38d]">
               Friends
             </p>
-            <p className="mt-3 font-display text-5xl text-[#f7f2eb]">12</p>
+            <p className="mt-3 font-display text-5xl text-[#f7f2eb]">0</p>
             <p className="mt-4 text-sm leading-6 text-[#f7f2eb]/70">
               Keep up with shared rankings, recent favorites, and who is
               chasing the next perfect opening.
