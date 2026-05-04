@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Sora } from "next/font/google";
+import { SiteNav } from "@/components/SiteNav";
 import "./globals.css";
 
 const sora = Sora({
@@ -32,7 +33,10 @@ export default function RootLayout({
           <div className="pointer-events-none absolute top-24 left-[-10%] h-[360px] w-[360px] rounded-full bg-[#b9f3e4] blur-[130px]" />
           <div className="pointer-events-none absolute bottom-[-20%] right-[10%] h-[300px] w-[300px] rounded-full bg-[#ffc4b4] blur-[140px]" />
 
-          <div className="relative z-10">{children}</div>
+          <div className="relative z-10">
+            <SiteNav />
+            {children}
+          </div>
         </div>
       </body>
     </html>
