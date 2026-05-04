@@ -1,7 +1,8 @@
 "use client";
 
 import { SearchResultBox } from "@/components/SearchResultBox";
-import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
+import { useState } from "react";
 
 const animeThemes = [
   {
@@ -53,40 +54,67 @@ const profiles = [
 
 type SearchMode = "themes" | "profiles";
 
+type SearchResult = {
+  title: string;
+  href: string;
+};
+
 export default function Home() {
   const [mode, setMode] = useState<SearchMode>("themes");
-  const [query, setQuery] = useState("");
+  const [draftQuery, setDraftQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>(() =>
+    animeThemes.map((theme) => ({
+      title: theme.title,
+      href: theme.href,
+    })),
+  );
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState("");
 
-  const normalizedQuery = query.trim().toLowerCase();
+  async function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSearching(true);
+    setSearchError("");
 
-  const themeResults = useMemo(() => {
-    if (!normalizedQuery) {
-      return animeThemes;
+    try {
+      const searchParams = new URLSearchParams({
+        kind: mode,
+        q: draftQuery.trim(),
+      });
+      const response = await fetch(`/api/search?${searchParams.toString()}`);
+      const body: { results?: SearchResult[]; error?: string } =
+        await response.json();
+
+      if (!response.ok) {
+        throw new Error(body.error ?? "Search failed");
+      }
+
+      setResults(body.results ?? []);
+    } catch (error) {
+      setSearchError(
+        error instanceof Error ? error.message : "Search failed",
+      );
+      setResults([]);
+    } finally {
+      setIsSearching(false);
     }
+  }
 
-    return animeThemes.filter((theme) =>
-      [theme.title, theme.anime, theme.season, theme.tone]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery),
+  function handleModeChange(nextMode: SearchMode) {
+    setMode(nextMode);
+    setSearchError("");
+    setResults(
+      nextMode === "themes"
+        ? animeThemes.map((theme) => ({
+            title: theme.title,
+            href: theme.href,
+          }))
+        : profiles.map((profile) => ({
+            title: profile.username,
+            href: profile.href,
+          })),
     );
-  }, [normalizedQuery]);
-
-  const profileResults = useMemo(() => {
-    if (!normalizedQuery) {
-      return profiles;
-    }
-
-    return profiles.filter((profile) =>
-      [profile.username, profile.favorites, profile.topTheme]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery),
-    );
-  }, [normalizedQuery]);
-
-  const activeCount =
-    mode === "themes" ? themeResults.length : profileResults.length;
+  }
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 pb-16">
@@ -104,7 +132,7 @@ export default function Home() {
           <div className="flex rounded-full border border-[#17130f]/10 bg-[#f7f2eb]/80 p-1">
             <button
               type="button"
-              onClick={() => setMode("themes")}
+              onClick={() => handleModeChange("themes")}
               className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition ${
                 mode === "themes"
                   ? "bg-[#17130f] text-[#f7f2eb]"
@@ -115,7 +143,7 @@ export default function Home() {
             </button>
             <button
               type="button"
-              onClick={() => setMode("profiles")}
+              onClick={() => handleModeChange("profiles")}
               className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition ${
                 mode === "profiles"
                   ? "bg-[#17130f] text-[#f7f2eb]"
@@ -127,49 +155,49 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-8">
+        <form className="mt-8" onSubmit={handleSearchSubmit}>
           <label htmlFor="home-search" className="sr-only">
             Search
           </label>
           <input
             id="home-search"
             type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            value={draftQuery}
+            onChange={(event) => setDraftQuery(event.target.value)}
             placeholder={
               mode === "themes" ? "Search anime themes" : "Search profiles"
             }
             className="w-full rounded-full border border-[#17130f]/10 bg-white/85 px-5 py-4 text-base font-semibold text-[#17130f] shadow-sm backdrop-blur transition placeholder:text-[#8b6c4c]/70 focus:border-[#17130f]/30 focus:outline-none"
           />
-        </div>
+        </form>
 
         <div className="mt-6 flex items-center justify-between gap-4">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#8b6c4c]">
-            {activeCount} Results
+            {isSearching ? "Searching" : `${results.length} Results`}
           </p>
         </div>
 
-        {mode === "themes" ? (
-          <div className="mt-4 grid gap-4 lg:grid-cols-3">
-            {themeResults.map((theme) => (
-              <SearchResultBox
-                key={`${theme.anime}-${theme.title}`}
-                href={theme.href}
-                title={theme.title}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="mt-4 grid gap-4 lg:grid-cols-3">
-            {profileResults.map((profile) => (
-              <SearchResultBox
-                key={profile.username}
-                href={profile.href}
-                title={profile.username}
-              />
-            ))}
-          </div>
-        )}
+        {searchError ? (
+          <p className="mt-4 text-sm font-semibold text-red-700">
+            {searchError}
+          </p>
+        ) : null}
+
+        {!isSearching && results.length === 0 && !searchError ? (
+          <p className="mt-4 text-sm font-semibold text-[#8b6c4c]">
+            No results found.
+          </p>
+        ) : null}
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+          {results.map((result) => (
+            <SearchResultBox
+              key={`${result.href}-${result.title}`}
+              href={result.href}
+              title={result.title}
+            />
+          ))}
+        </div>
       </section>
     </main>
   );
