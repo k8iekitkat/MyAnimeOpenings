@@ -7,7 +7,7 @@ import { FormEvent, useState, useTransition } from "react";
 const openingNotes = [
   "Build a profile to keep track of the openings you replay most.",
   "Save favorites, rank eras, and keep your own watchlist in one place.",
-  "Add friends to share and compare your rankings.",
+  "Make your profile searchable as your list grows.",
 ];
 
 export default function SignUpPage() {
@@ -64,21 +64,21 @@ export default function SignUpPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl items-center px-6 py-12">
+    <main className="mx-auto flex w-full max-w-6xl items-start px-6 pb-8 pt-2 lg:min-h-[calc(100vh-6.5rem)] lg:items-center">
       <div className="grid w-full gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="flex flex-col justify-center rounded-[2rem] border border-[#17130f]/10 bg-white/45 p-8 shadow-[0_24px_80px_rgba(23,19,15,0.08)] backdrop-blur md:p-10">
+        <section className="flex flex-col justify-center rounded-[2rem] border border-[#17130f]/10 bg-white/45 p-6 shadow-[0_24px_80px_rgba(23,19,15,0.08)] backdrop-blur md:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#8b6c4c]">
             Join The Playlist
           </p>
           <h1 className="mt-4 font-display text-6xl leading-none text-[#17130f] sm:text-7xl">
             Sign Up
           </h1>
-          <p className="mt-5 max-w-xl text-base leading-7 text-[#4f4031] sm:text-lg">
+          <p className="mt-4 max-w-xl text-base leading-7 text-[#4f4031]">
             Create your account to collect standout openings, revisit your
             favorite arcs, and keep your own curated theme-library.
           </p>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {openingNotes.map((note) => (
               <div
                 key={note}
@@ -90,7 +90,7 @@ export default function SignUpPage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-[#17130f]/10 bg-[#17130f] p-6 text-[#f7f2eb] shadow-[0_24px_80px_rgba(23,19,15,0.16)] sm:p-8">
+        <section className="rounded-[2rem] border border-[#17130f]/10 bg-[#17130f] p-5 text-[#f7f2eb] shadow-[0_24px_80px_rgba(23,19,15,0.16)] sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.35em] text-[#d9b38d]">
@@ -105,7 +105,7 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+          <form className="mt-6 space-y-3" onSubmit={handleSubmit}>
             <label className="block">
               <span className="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-[#d9b38d]">
                 Username
@@ -116,7 +116,7 @@ export default function SignUpPage() {
                 placeholder="ex. midnightchorus"
                 autoComplete="username"
                 required
-                className="w-full rounded-2xl border border-white/12 bg-white/8 px-5 py-4 text-base text-[#f7f2eb] placeholder:text-[#f7f2eb]/45 focus:border-[#ffd8a8] focus:outline-none"
+                className="w-full rounded-2xl border border-white/12 bg-white/8 px-5 py-3 text-base text-[#f7f2eb] placeholder:text-[#f7f2eb]/45 focus:border-[#ffd8a8] focus:outline-none"
               />
             </label>
 
@@ -131,7 +131,7 @@ export default function SignUpPage() {
                 autoComplete="new-password"
                 minLength={8}
                 required
-                className="w-full rounded-2xl border border-white/12 bg-white/8 px-5 py-4 text-base text-[#f7f2eb] placeholder:text-[#f7f2eb]/45 focus:border-[#ffd8a8] focus:outline-none"
+                className="w-full rounded-2xl border border-white/12 bg-white/8 px-5 py-3 text-base text-[#f7f2eb] placeholder:text-[#f7f2eb]/45 focus:border-[#ffd8a8] focus:outline-none"
               />
             </label>
 
@@ -146,7 +146,7 @@ export default function SignUpPage() {
                 autoComplete="new-password"
                 minLength={8}
                 required
-                className="w-full rounded-2xl border border-white/12 bg-white/8 px-5 py-4 text-base text-[#f7f2eb] placeholder:text-[#f7f2eb]/45 focus:border-[#ffd8a8] focus:outline-none"
+                className="w-full rounded-2xl border border-white/12 bg-white/8 px-5 py-3 text-base text-[#f7f2eb] placeholder:text-[#f7f2eb]/45 focus:border-[#ffd8a8] focus:outline-none"
               />
             </label>
 
@@ -161,13 +161,13 @@ export default function SignUpPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-full bg-[#f7f2eb] px-5 py-4 text-sm font-semibold uppercase tracking-[0.24em] text-[#17130f] transition hover:-translate-y-0.5 hover:bg-[#ffd8a8] disabled:cursor-not-allowed disabled:opacity-70"
+              className="w-full rounded-full bg-[#f7f2eb] px-5 py-3 text-sm font-semibold uppercase tracking-[0.24em] text-[#17130f] transition hover:-translate-y-0.5 hover:bg-[#ffd8a8] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isPending ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm text-[#f7f2eb]/70">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-[#f7f2eb]/70">
             <p>
               Already have an account?{" "}
               <Link

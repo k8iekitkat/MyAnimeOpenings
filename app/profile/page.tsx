@@ -3,11 +3,12 @@ import { redirect } from "next/navigation";
 import { getUserFromSession } from "@/lib/auth";
 
 export default async function ProfilePage() {
- const user = await getUserFromSession();
-    if(!user) {
-      console.log(user);
-      redirect('/login');
-    }
+  const user = await getUserFromSession();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   const userProfile = {
     username: user.username,
   };
@@ -30,7 +31,7 @@ export default async function ProfilePage() {
 
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#8b6c4c]">
-                User Profile
+                Account
               </p>
               <h1 className="mt-3 font-display text-5xl leading-none text-[#17130f] sm:text-7xl">
                 {userProfile.username}
@@ -41,12 +42,6 @@ export default async function ProfilePage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/"
-              className="rounded-full border border-[#17130f] px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#17130f] transition hover:-translate-y-0.5 hover:bg-[#17130f] hover:text-[#f7f2eb]"
-            >
-              Back Home
-            </Link>
-            <Link
-              href="/"
               className="rounded-full border border-[#17130f]/12 bg-white/80 px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#17130f] transition hover:-translate-y-0.5 hover:border-[#17130f]/30"
             >
               Logout
@@ -54,7 +49,7 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="mt-8 grid gap-4">
           <div className="rounded-[1.75rem] border border-[#17130f]/10 bg-[#f7f2eb]/80 p-5">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -86,24 +81,6 @@ export default async function ProfilePage() {
                 </div>
               </div>
             </article>
-          </div>
-
-          <div className="rounded-[1.75rem] border border-[#17130f]/10 bg-[#17130f] p-5 text-[#f7f2eb]">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d9b38d]">
-              Friends
-            </p>
-            <p className="mt-3 font-display text-5xl text-[#f7f2eb]">0</p>
-            <p className="mt-4 text-sm leading-6 text-[#f7f2eb]/70">
-              Keep up with shared rankings, recent favorites, and who is
-              chasing the next perfect opening.
-            </p>
-
-            <button
-              type="button"
-              className="mt-6 rounded-full border border-white/14 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#f7f2eb] transition hover:bg-white/8"
-            >
-              View Friends
-            </button>
           </div>
         </div>
       </section>
