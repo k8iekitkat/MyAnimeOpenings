@@ -7,6 +7,7 @@ type SearchResult = {
   href: string;
 };
 
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const kind = searchParams.get("kind");
@@ -32,6 +33,12 @@ async function searchByKind(
 
   if (kind === "themes") {
     // TODO: Fill in backend search for anime opening/theme results.
+    const url = new URL("https://api.animethemes.moe/animetheme");
+    url.searchParams.set('q', query);
+    console.log(url);
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
     return [];
   }
 
