@@ -1,10 +1,12 @@
 "use client";
 
+import { SearchResultBox } from "@/components/SearchResultBox";
 import { useMemo, useState } from "react";
 
 const animeThemes = [
   {
     title: "Skyline Pulse",
+    href: "/themes/skyline-pulse",
     anime: "Edge of Sun",
     season: "OP 1  2023",
     tone: "Electro-pop shimmer",
@@ -12,6 +14,7 @@ const animeThemes = [
   },
   {
     title: "Moonlit Graffiti",
+    href: "/themes/moonlit-graffiti",
     anime: "Night Circuit",
     season: "OP 2  2021",
     tone: "Lo-fi city nights",
@@ -19,6 +22,7 @@ const animeThemes = [
   },
   {
     title: "Aurora Spiral",
+    href: "/themes/aurora-spiral",
     anime: "Starbound Echo",
     season: "OP 1  2024",
     tone: "Dream-pop lift",
@@ -29,16 +33,19 @@ const animeThemes = [
 const profiles = [
   {
     username: "midnightchorus",
+    href: "/profile/midnightchorus",
     favorites: "38 rated openings",
     topTheme: "Skyline Pulse",
   },
   {
     username: "openingvault",
+    href: "/profile/openingvault",
     favorites: "24 rated openings",
     topTheme: "Aurora Spiral",
   },
   {
     username: "citypoparc",
+    href: "/profile/citypoparc",
     favorites: "17 rated openings",
     topTheme: "Moonlit Graffiti",
   },
@@ -145,56 +152,21 @@ export default function Home() {
         {mode === "themes" ? (
           <div className="mt-4 grid gap-4 lg:grid-cols-3">
             {themeResults.map((theme) => (
-              <article
+              <SearchResultBox
                 key={`${theme.anime}-${theme.title}`}
-                className="rounded-[1.5rem] border border-[#17130f]/10 bg-[#f7f2eb]/80 p-5"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-semibold text-[#17130f]">
-                      {theme.title}
-                    </h2>
-                    <p className="mt-1 text-sm font-semibold uppercase tracking-[0.18em] text-[#8b6c4c]">
-                      {theme.anime}
-                    </p>
-                  </div>
-                  <div className="rounded-full bg-[#17130f] px-3 py-2 text-sm font-semibold text-[#f7f2eb]">
-                    {theme.rating}
-                  </div>
-                </div>
-                <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#4f4031]">
-                  <span className="rounded-full border border-[#17130f]/10 bg-white/70 px-3 py-2">
-                    {theme.season}
-                  </span>
-                  <span className="rounded-full border border-[#17130f]/10 bg-white/70 px-3 py-2">
-                    {theme.tone}
-                  </span>
-                </div>
-              </article>
+                href={theme.href}
+                title={theme.title}
+              />
             ))}
           </div>
         ) : (
           <div className="mt-4 grid gap-4 lg:grid-cols-3">
             {profileResults.map((profile) => (
-              <article
+              <SearchResultBox
                 key={profile.username}
-                className="rounded-[1.5rem] border border-[#17130f]/10 bg-[#17130f] p-5 text-[#f7f2eb]"
-              >
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f7f2eb] text-[#17130f]">
-                  <span className="font-display text-3xl">
-                    {profile.username.slice(0, 2).toUpperCase()}
-                  </span>
-                </div>
-                <h2 className="mt-5 text-2xl font-semibold">
-                  {profile.username}
-                </h2>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#d9b38d]">
-                  {profile.favorites}
-                </p>
-                <p className="mt-4 text-sm leading-6 text-[#f7f2eb]/70">
-                  Top opening: {profile.topTheme}
-                </p>
-              </article>
+                href={profile.href}
+                title={profile.username}
+              />
             ))}
           </div>
         )}
