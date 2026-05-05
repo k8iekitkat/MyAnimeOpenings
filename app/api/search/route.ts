@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { supabase } from "@/lib/supabase";
 
 type SearchKind = "themes" | "profiles";
 
@@ -26,6 +27,10 @@ type AnimeTheme = {
   };
 };
 
+type ProfileRow = {
+  username: string;
+};
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const kind = searchParams.get("kind");
@@ -51,8 +56,29 @@ async function searchByKind(
     return searchAnimeThemes(query);
   }
 
-  // TODO: Fill in backend search for profile/user results.
-  return [];
+  return searchProfiles(query);
+}
+
+async function searchProfiles(query: string): Promise<SearchResult[]> {
+  if (!query) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("username")
+    .ilike("username", `%${query}%`)
+    .order("username", { ascending: true })
+    .limit(24);
+
+  if (error) {
+    throw new Error(`Profile search error: ${error.message}`);
+  }
+
+  return ((data ?? []) as ProfileRow[]).map((profile) => ({
+    title: profile.username,
+    href: `/profile/${encodeURIComponent(profile.username)}`,
+  }));
 }
 
 async function searchAnimeThemes(query: string): Promise<SearchResult[]> {
