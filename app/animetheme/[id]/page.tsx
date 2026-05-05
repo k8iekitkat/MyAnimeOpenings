@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { RatingForm } from "@/components/RatingForm";
 
 type AnimeThemePageProps = {
   params: Promise<{
@@ -70,27 +71,7 @@ export default async function AnimeThemePage({ params }: AnimeThemePageProps) {
               </p>
             </div>
 
-            <form className="w-full max-w-xs rounded-2xl border border-[#17130f]/10 bg-[#f7f2eb]/75 p-4">
-              <label
-                htmlFor="theme-rating"
-                className="text-xs font-semibold uppercase tracking-[0.25em] text-[#8b6c4c]"
-              >
-                Your Rating
-              </label>
-              <div className="mt-3 flex items-center gap-3">
-                <input
-                  id="theme-rating"
-                  name="rating"
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  placeholder="0.0"
-                  className="w-28 rounded-full border border-[#17130f]/10 bg-white px-4 py-3 text-base font-semibold text-[#17130f] shadow-sm transition placeholder:text-[#8b6c4c]/70 focus:border-[#17130f]/30 focus:outline-none"
-                />
-                <span className="text-sm font-semibold text-[#4f4031]">/ 10</span>
-              </div>
-            </form>
+            <RatingForm animethemeId={id} />
           </div>
         </div>
 
