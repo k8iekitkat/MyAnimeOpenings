@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { RatingForm } from "@/components/RatingForm";
+import { getOptionalUserFromSession } from "@/lib/auth";
 
 type AnimeThemePageProps = {
   params: Promise<{
@@ -39,9 +40,16 @@ type CachedAnimeTheme = {
   response_json: AnimeThemeResponse;
 };
 
+type RatingRow = {
+  rating: number;
+};
+
 export default async function AnimeThemePage({ params }: AnimeThemePageProps) {
   const { id } = await params;
-  const animeTheme = await getAnimeTheme(id);
+  const [animeTheme, initialRating] = await Promise.all([
+    getAnimeTheme(id),
+    getCurrentUserRating(id),
+  ]);
 
   if (!animeTheme) {
     notFound();
@@ -71,7 +79,7 @@ export default async function AnimeThemePage({ params }: AnimeThemePageProps) {
               </p>
             </div>
 
-            <RatingForm animethemeId={id} />
+            <RatingForm animethemeId={id} initialRating={initialRating} />
           </div>
         </div>
 
@@ -147,6 +155,28 @@ async function getAnimeTheme(id: string) {
   }
 
   return animeTheme;
+}
+
+async function getCurrentUserRating(id: string) {
+  const user = await getOptionalUserFromSession();
+
+  if (!user) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("ratings")
+    .select("rating")
+    .eq("username", user.username)
+    .eq("animetheme_id", Number(id))
+    .maybeSingle<RatingRow>();
+
+  if (error) {
+    console.warn("Failed to read current user rating", error);
+    return null;
+  }
+
+  return data?.rating ?? null;
 }
 
 async function getCachedAnimeTheme(id: string) {

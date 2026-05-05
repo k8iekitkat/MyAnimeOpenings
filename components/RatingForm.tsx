@@ -1,13 +1,18 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type RatingFormProps = {
   animethemeId: string;
+  initialRating: number | null;
 };
 
-export function RatingForm({ animethemeId }: RatingFormProps) {
-  const [rating, setRating] = useState("");
+export function RatingForm({ animethemeId, initialRating }: RatingFormProps) {
+  const router = useRouter();
+  const [rating, setRating] = useState(
+    initialRating === null ? "" : formatInitialRating(initialRating),
+  );
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,6 +35,11 @@ export function RatingForm({ animethemeId }: RatingFormProps) {
         }),
       });
       const body: { error?: string } = await response.json();
+
+      if (response.status === 401) {
+        router.push("/signup");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(body.error ?? "Failed to save rating");
@@ -89,4 +99,8 @@ export function RatingForm({ animethemeId }: RatingFormProps) {
       ) : null}
     </form>
   );
+}
+
+function formatInitialRating(rating: number) {
+  return Number.isInteger(rating) ? rating.toString() : rating.toFixed(1);
 }
