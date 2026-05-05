@@ -4,54 +4,6 @@ import { SearchResultBox } from "@/components/SearchResultBox";
 import type { FormEvent } from "react";
 import { useState } from "react";
 
-const animeThemes = [
-  {
-    title: "Skyline Pulse",
-    href: "/themes/skyline-pulse",
-    anime: "Edge of Sun",
-    season: "OP 1  2023",
-    tone: "Electro-pop shimmer",
-    rating: "9.4",
-  },
-  {
-    title: "Moonlit Graffiti",
-    href: "/themes/moonlit-graffiti",
-    anime: "Night Circuit",
-    season: "OP 2  2021",
-    tone: "Lo-fi city nights",
-    rating: "8.8",
-  },
-  {
-    title: "Aurora Spiral",
-    href: "/themes/aurora-spiral",
-    anime: "Starbound Echo",
-    season: "OP 1  2024",
-    tone: "Dream-pop lift",
-    rating: "9.1",
-  },
-];
-
-const profiles = [
-  {
-    username: "midnightchorus",
-    href: "/profile/midnightchorus",
-    favorites: "38 rated openings",
-    topTheme: "Skyline Pulse",
-  },
-  {
-    username: "openingvault",
-    href: "/profile/openingvault",
-    favorites: "24 rated openings",
-    topTheme: "Aurora Spiral",
-  },
-  {
-    username: "citypoparc",
-    href: "/profile/citypoparc",
-    favorites: "17 rated openings",
-    topTheme: "Moonlit Graffiti",
-  },
-];
-
 type SearchMode = "themes" | "profiles";
 
 type SearchResult = {
@@ -62,12 +14,7 @@ type SearchResult = {
 export default function Home() {
   const [mode, setMode] = useState<SearchMode>("themes");
   const [draftQuery, setDraftQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>(() =>
-    animeThemes.map((theme) => ({
-      title: theme.title,
-      href: theme.href,
-    })),
-  );
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState("");
 
@@ -103,17 +50,7 @@ export default function Home() {
   function handleModeChange(nextMode: SearchMode) {
     setMode(nextMode);
     setSearchError("");
-    setResults(
-      nextMode === "themes"
-        ? animeThemes.map((theme) => ({
-            title: theme.title,
-            href: theme.href,
-          }))
-        : profiles.map((profile) => ({
-            title: profile.username,
-            href: profile.href,
-          })),
-    );
+    setResults([]);
   }
 
   return (
