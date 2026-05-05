@@ -33,15 +33,31 @@ async function searchByKind(
 
   if (kind === "themes") {
     // TODO: Fill in backend search for anime opening/theme results.
-    const url = new URL("https://api.animethemes.moe/animetheme");
-    url.searchParams.set('q', query);
-    console.log(url);
-    const response = await fetch(url);
-    const data = await response.json();
+    const data = await searchAnimeThemes(query);
     console.log(data);
     return [];
   }
 
   // TODO: Fill in backend search for profile/user results.
   return [];
+}
+
+async function searchAnimeThemes(query: string) {
+  const url = new URL("https://api.animethemes.moe/animetheme");
+  url.searchParams.set("q", query);
+  console.log(url);
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "User-Agent": "MyAnimeSearchApp/1.0", 
+    },
+  });
+
+
+  if (!response.ok) {
+    throw new Error(`AnimeThemes API error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
 }
