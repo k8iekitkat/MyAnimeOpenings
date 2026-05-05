@@ -1,6 +1,10 @@
 import Link from "next/link";
+import { getOptionalUserFromSession } from "@/lib/auth";
 
-export function SiteNav() {
+export async function SiteNav() {
+  const user = await getOptionalUserFromSession();
+  const accountHref = user ? `/profile/${user.username}` : "/login";
+
   return (
     <header className="relative z-10 mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-6 px-6 py-5">
       <Link href="/" className="flex items-center gap-4">
@@ -25,7 +29,7 @@ export function SiteNav() {
           Home
         </Link>
         <Link
-          href="/profile"
+          href={accountHref}
           className="rounded-full border border-[#17130f] px-5 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#17130f] transition hover:-translate-y-0.5 hover:bg-[#17130f] hover:text-[#f7f2eb]"
         >
           Account
