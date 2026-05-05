@@ -37,7 +37,7 @@ export function RatingForm({ animethemeId, initialRating }: RatingFormProps) {
       const body: { error?: string } = await response.json();
 
       if (response.status === 401) {
-        router.push("/signup");
+        router.push("/login");
         return;
       }
 

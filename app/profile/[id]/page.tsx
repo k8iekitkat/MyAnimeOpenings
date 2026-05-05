@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { getOptionalUserFromSession } from "@/lib/auth";
+import { LogoutButton } from "@/components/LogoutButton";
 
 type ProfilePageProps = {
   params: Promise<{
@@ -42,11 +44,13 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const { id } = await params;
   const username = decodeURIComponent(id);
   const user = await getProfile(username);
+  const currentUser = await getOptionalUserFromSession();
 
   if (!user) {
     notFound();
   }
 
+  const isOwnProfile = currentUser?.username === user.username;
   const ratings = await getRatings(user.username);
   const animeThemes = await getCachedAnimeThemes(
     ratings.map((rating) => rating.animetheme_id),
@@ -56,7 +60,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     <main className="mx-auto w-full max-w-6xl px-6 py-10 sm:py-12">
       <section className="overflow-hidden rounded-[2rem] border border-[#17130f]/10 bg-white/55 shadow-[0_24px_80px_rgba(23,19,15,0.08)] backdrop-blur">
         <div className="border-b border-[#17130f]/10 p-6 sm:p-8">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
             <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-[2rem] bg-[#17130f] text-[#f7f2eb] shadow-[0_18px_50px_rgba(23,19,15,0.22)] sm:h-32 sm:w-32">
               <span className="font-display text-6xl">
                 {user.username.slice(0, 2).toUpperCase()}
@@ -74,6 +79,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                 {ratings.length} rated anime themes
               </p>
             </div>
+            </div>
+
+            {isOwnProfile ? <LogoutButton /> : null}
           </div>
         </div>
 
